@@ -25,7 +25,7 @@ ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).c
 time.sleep(2)
 def faxCheck():
     driver.get("https://www.enfax.com/fax/view/receive")
-    time.sleep(2)
+    time.sleep(3)
     #타임 스케쥴 진행
     html = driver.page_source
     fax_soup = BeautifulSoup(html,'html.parser')
