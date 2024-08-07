@@ -31,11 +31,16 @@ def faxCheck():
     driver.get("https://www.enfax.com/fax/view/receive")
     time.sleep(3)
     #타임 스케쥴 진행
-    html = driver.page_source
-    fax_soup = BeautifulSoup(html,'html.parser')
-    if fax_soup.find('span', attrs={'class':'state_box stt_notread'}).get_text()=="안읽음":
-        #텔레그램 전송
-        requests.get(f"https://api.telegram.org/bot{login_info['bot']['token']}/sendMessage?chat_id={login_info['bot']['chatId']}&text=신규 팩스 수신, 확인필요")
+    fax_soup = BeautifulSoup(driver.page_source,'html.parser')
+    newfax = fax_soup.find('span', attrs={'class':'state_box stt_notread'})
+    #요소 검증
+    if newfax != None:
+        #수신확인
+        if newfax.get_text()=="안읽음":
+            #텔레그램 전송
+            requests.get(f"https://api.telegram.org/bot{login_info['bot']['token']}/sendMessage?chat_id={login_info['bot']['chatId']}&text=신규 팩스 수신, 확인필요")
+        else:
+            pass
     else:
         pass
 if __name__ == "__main__":
