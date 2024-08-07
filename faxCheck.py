@@ -29,8 +29,7 @@ def faxCheck():
     #타임 스케쥴 진행
     html = driver.page_source
     fax_soup = BeautifulSoup(html,'html.parser')
-    checkPoint = [span.get_text() for span in fax_soup.find_all('span', attrs={'class':'state_box stt_notread'})]
-    if "안읽음" in checkPoint:
+    if "안읽음" == fax_soup.find('span', attrs={'class':'state_box stt_notread'}).get_text():
         #텔레그램 전송
         requests.get(f"https://api.telegram.org/bot{login_info['bot']['token']}/sendMessage?chat_id={login_info['bot']['chatId']}&text=신규 팩스 수신, 확인필요")
     else:
