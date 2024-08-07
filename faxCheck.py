@@ -8,8 +8,12 @@ from bs4 import BeautifulSoup
 #로그인 정보 호출
 with open('C:\\Users\\USER\\ve_1\\nFax\\login.json', 'r') as f:
     login_info = json.load(f)
-#Nfax 신규 수신 확인
-driver = webdriver.Chrome(options=webdriver.ChromeOptions().add_argument('--blink-settings=imagesEnabled=false'))
+#크롬 옵션설정
+options = webdriver.ChromeOptions()
+options.add_argument('--disable-gpu')
+options.add_argument('--disable-extensions')
+options.add_argument('--blink-settings=imagesEnabled=false')
+driver = webdriver.Chrome(options=options)
 #크롬 드라이버 실행
 driver.get("https://www.enfax.com/common/login")
 driver.implicitly_wait(1)
