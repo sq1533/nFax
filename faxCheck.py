@@ -7,9 +7,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 #DB정보 호출
-with open('C:\\Users\\USER\\ve_1\\nFax\\login.json', 'r') as f:
+with open('C:\\Users\\USER\\ve_1\\nFax\\login.json', 'r',encoding='utf-8') as f:
     login = json.load(f)
-with open('C:\\Users\\USER\\ve_1\\nFax\\fax_info.json', 'r') as f:
+with open('C:\\Users\\USER\\ve_1\\nFax\\fax_info.json', 'r',encoding='utf-8') as f:
     fax_info = json.load(f)
 login_info = pd.json_normalize(login['nFax'])
 bot_info = pd.json_normalize(login['bot'])
@@ -26,12 +26,12 @@ driver.get("https://www.enfax.com/common/login")
 driver.implicitly_wait(1)
 #로그인 정보입력(아이디)
 id_box = driver.find_element(By.XPATH,'//input[@id="userId"]')
-id = login.loc[0,'id']
+id = login_info.loc[0,'id']
 ActionChains(driver).send_keys_to_element(id_box, '{}'.format(id)).perform()
 #로그인 정보입력(비밀번호)
 password_box = driver.find_element(By.XPATH,'//input[@id="userPwd"]')
 login_button_2 = driver.find_element(By.XPATH,'//button[@id="btnLogin"]')
-password = login.loc[0,'pw']
+password = login_info.loc[0,'pw']
 ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
 time.sleep(2)
 def faxCheck():
