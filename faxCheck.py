@@ -1,13 +1,19 @@
 import time
 import json
+import pandas as pd
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
-#로그인 정보 호출
+#DB정보 호출
 with open('C:\\Users\\USER\\ve_1\\nFax\\login.json', 'r') as f:
-    login_info = json.load(f)
+    login = json.load(f)
+with open('C:\\Users\\USER\\ve_1\\nFax\\fax_info.json', 'r') as f:
+    fax_info = json.load(f)
+login_info = pd.json_normalize(login['nFax'])
+bot_info = pd.json_normalize(login['bot'])
+fax = pd.json_normalize(fax_info)
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
@@ -19,12 +25,12 @@ driver.get("https://www.enfax.com/common/login")
 driver.implicitly_wait(1)
 #로그인 정보입력(아이디)
 id_box = driver.find_element(By.XPATH,'//input[@id="userId"]')
-id = login_info['nFax']['id']
+id = login.loc[0,'id']
 ActionChains(driver).send_keys_to_element(id_box, '{}'.format(id)).perform()
 #로그인 정보입력(비밀번호)
 password_box = driver.find_element(By.XPATH,'//input[@id="userPwd"]')
 login_button_2 = driver.find_element(By.XPATH,'//button[@id="btnLogin"]')
-password = login_info['nFax']['pw']
+password = login.loc[0,'pw']
 ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
 time.sleep(2)
 def faxCheck():
@@ -37,8 +43,9 @@ def faxCheck():
     if newfax != None:
         #수신확인
         if newfax.get_text()=="안읽음":
+            faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_readed faxReceiveBoxListRow'}).get('data-send-fax-number')
             #텔레그램 전송
-            requests.get(f"https://api.telegram.org/bot{login_info['bot']['token']}/sendMessage?chat_id={login_info['bot']['chatId']}&text=신규 팩스 수신, 확인필요")
+            requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text=신규 팩스 수신, 확인필요")
             time.sleep(2)
         else:
             pass
