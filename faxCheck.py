@@ -14,6 +14,7 @@ with open('C:\\Users\\USER\\ve_1\\nFax\\fax_info.json', 'r') as f:
 login_info = pd.json_normalize(login['nFax'])
 bot_info = pd.json_normalize(login['bot'])
 fax = pd.json_normalize(fax_info)
+
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
@@ -44,9 +45,16 @@ def faxCheck():
         #수신확인
         if newfax.get_text()=="안읽음":
             faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_readed faxReceiveBoxListRow'}).get('data-send-fax-number')
-            #텔레그램 전송
-            requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text=신규 팩스 수신, 확인필요")
-            time.sleep(2)
+            if faxNumber in fax['faxNumber'].tolist():
+                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사']}"
+                #텔레그램 전송
+                requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
+                time.sleep(2)
+            else:
+                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : 확인불가"
+                #텔레그램 전송
+                requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
+                time.sleep(2)
         else:
             pass
     else:
