@@ -39,6 +39,7 @@ def faxCheck():
         if newfax.get_text()=="안읽음":
             #텔레그램 전송
             requests.get(f"https://api.telegram.org/bot{login_info['bot']['token']}/sendMessage?chat_id={login_info['bot']['chatId']}&text=신규 팩스 수신, 확인필요")
+            time.sleep(2)
         else:
             pass
     else:
