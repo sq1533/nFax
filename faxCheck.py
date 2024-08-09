@@ -44,7 +44,10 @@ def faxCheck():
     if newfax != None:
         #수신확인
         if newfax.get_text()=="안읽음":
-            faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_readed faxReceiveBoxListRow'}).get('data-send-fax-number')
+            if fax_soup.find('div', attrs={'class':'t_row stt_notreaded faxReceiveBoxListRow'}) != None:
+                faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_notreaded faxReceiveBoxListRow'}).get('data-send-fax-number')
+            else:
+                faxNumber = "확인불가"
             if faxNumber in fax['faxNumber'].tolist():
                 tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사']}"
                 #텔레그램 전송
