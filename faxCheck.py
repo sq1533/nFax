@@ -45,7 +45,7 @@ def faxCheck():
         #수신확인
         if newfax.get_text()=="안읽음":
             if fax_soup.find('div', attrs={'class':'t_row stt_notread faxReceiveBoxListRow'}) != None:
-                faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_notreaded faxReceiveBoxListRow'}).get('data-send-fax-number')
+                faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_notread faxReceiveBoxListRow'}).get('data-send-fax-number')
             else:
                 faxNumber = "확인불가"
             if faxNumber in fax['faxNumber'].tolist():
