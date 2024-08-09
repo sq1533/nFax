@@ -49,7 +49,7 @@ def faxCheck():
             else:
                 faxNumber = "확인불가"
             if faxNumber in fax['faxNumber'].tolist():
-                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사']}"
+                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사'].values}"
                 #텔레그램 전송
                 requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
                 time.sleep(2)
