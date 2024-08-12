@@ -36,7 +36,7 @@ ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).c
 time.sleep(2)
 def faxCheck():
     driver.get("https://www.enfax.com/fax/view/receive")
-    time.sleep(3)
+    time.sleep(2)
     #타임 스케쥴 진행
     fax_soup = BeautifulSoup(driver.page_source,'html.parser')
     newfax = fax_soup.find('span', attrs={'class':'state_box stt_notread'})
@@ -61,6 +61,7 @@ def faxCheck():
         else:
             pass
     else:
+        time.sleep(8)
         pass
 if __name__ == "__main__":
     while True:
