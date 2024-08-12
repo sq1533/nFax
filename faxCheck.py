@@ -59,6 +59,7 @@ def faxCheck():
                 requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
                 time.sleep(2)
         else:
+            time.sleep(8)
             pass
     else:
         time.sleep(8)
