@@ -7,14 +7,13 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 #DB정보 호출
-with open('C:\\Users\\USER\\ve_1\\nFax\\login.json', 'r',encoding='utf-8') as f:
+with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r',encoding='utf-8') as f:
     login = json.load(f)
-with open('C:\\Users\\USER\\ve_1\\nFax\\fax_info.json', 'r',encoding='utf-8') as f:
+with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f:
     fax_info = json.load(f)
 login_info = pd.json_normalize(login['nFax'])
-bot_info = pd.json_normalize(login['bot'])
+bot_info = pd.json_normalize(login['nFaxbot'])
 fax = pd.json_normalize(fax_info)
-
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
