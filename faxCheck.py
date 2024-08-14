@@ -11,9 +11,9 @@ with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r',encoding='utf-8') as
     login = json.load(f)
 with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f:
     fax_info = json.load(f)
-login_info = pd.json_normalize(login['nFax'])
-bot_info = pd.json_normalize(login['nFaxbot'])
-fax = pd.json_normalize(fax_info)
+login_info = pd.Series(login['nFax'])
+bot_info = pd.Series(login['nFaxbot'])
+fax = pd.Series(fax_info)
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
@@ -25,12 +25,12 @@ driver.get("https://www.enfax.com/common/login")
 driver.implicitly_wait(1)
 #로그인 정보입력(아이디)
 id_box = driver.find_element(By.XPATH,'//input[@id="userId"]')
-id = login_info.loc[0,'id']
+id = login_info['id']
 ActionChains(driver).send_keys_to_element(id_box, '{}'.format(id)).perform()
 #로그인 정보입력(비밀번호)
 password_box = driver.find_element(By.XPATH,'//input[@id="userPwd"]')
 login_button_2 = driver.find_element(By.XPATH,'//button[@id="btnLogin"]')
-password = login_info.loc[0,'pw']
+password = login_info['pw']
 ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
 time.sleep(2)
 def faxCheck():
@@ -50,12 +50,12 @@ def faxCheck():
             if faxNumber in fax['faxNumber'].tolist():
                 tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사'].values}"
                 #텔레그램 전송
-                requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
+                requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
                 time.sleep(2)
             else:
                 tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : 확인불가"
                 #텔레그램 전송
-                requests.get(f"https://api.telegram.org/bot{bot_info.loc[0,'token']}/sendMessage?chat_id={bot_info.loc[0,'chatId']}&text={tell}")
+                requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
                 time.sleep(2)
         else:
             time.sleep(8)
