@@ -13,7 +13,7 @@ with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f
     fax_info = json.load(f)
 login_info = pd.Series(login['nFax'])
 bot_info = pd.Series(login['nFaxbot'])
-fax = pd.Series(fax_info)
+fax = pd.DataFrame(fax_info)
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
@@ -47,7 +47,7 @@ def faxCheck():
                 faxNumber = fax_soup.find('div', attrs={'class':'t_row stt_notread faxReceiveBoxListRow'}).get('data-send-fax-number')
             else:
                 faxNumber = "확인불가"
-            if faxNumber in fax['faxNumber'].tolist():
+            if faxNumber in fax.loc['faxNumber'].tolist():
                 tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사'].values}"
                 #텔레그램 전송
                 requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
