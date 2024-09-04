@@ -33,8 +33,9 @@ login_button_2 = driver.find_element(By.XPATH,'//button[@id="btnLogin"]')
 password = login_info['pw']
 ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
 time.sleep(2)
+driver.get("https://www.enfax.com/fax/view/receive")
 def faxCheck():
-    driver.get("https://www.enfax.com/fax/view/receive")
+    driver.refresh()
     time.sleep(2)
     #타임 스케쥴 진행
     fax_soup = BeautifulSoup(driver.page_source,'html.parser')
