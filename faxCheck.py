@@ -21,6 +21,8 @@ options.add_argument("--disable-javascript")
 options.add_argument('--disable-extensions')
 options.add_argument('--blink-settings=imagesEnabled=false')
 driver = webdriver.Chrome(options=options)
+#600초로 타임아웃 연장
+driver.set_page_load_timeout(600)
 #크롬 드라이버 실행
 driver.get("https://www.enfax.com/common/login")
 driver.implicitly_wait(1)
