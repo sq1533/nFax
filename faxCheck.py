@@ -17,6 +17,7 @@ fax = pd.DataFrame(fax_info)
 #크롬 옵션설정
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-gpu')
+options.add_argument("--disable-javascript")
 options.add_argument('--disable-extensions')
 options.add_argument('--blink-settings=imagesEnabled=false')
 driver = webdriver.Chrome(options=options)
