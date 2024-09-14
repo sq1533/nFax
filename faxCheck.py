@@ -6,7 +6,6 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
-from datetime import datetime
 #DB정보 호출
 with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r', encoding='utf-8') as f:
     login_info = json.load(f)
@@ -37,10 +36,11 @@ password_box = driver.find_element(By.XPATH,'//input[@id="user_pwd"]')
 login_button_2 = driver.find_element(By.XPATH,'//button[@id="loginBtn"]')
 password = works_login['pw']
 ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
-time.sleep(2)
+time.sleep(1)
+driver.get("https://mail.worksmobile.com/#/my/103")
+time.sleep(1)
 #엔팩스 메일 확인
 def nfax():
-    driver.get("https://mail.worksmobile.com/#/my/103")
     driver.refresh()
     time.sleep(2)
     mailHome_soup = BeautifulSoup(driver.page_source,'html.parser')
