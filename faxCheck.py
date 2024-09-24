@@ -71,7 +71,7 @@ NFAX = nfax()
 if __name__ == "__main__":
     NFAX.getHome()
     while True:
-        for i in range(300):
+        for i in range(100):
             NFAX.newMail()
             t.sleep(5)
         NFAX.logout()
