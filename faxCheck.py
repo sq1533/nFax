@@ -23,7 +23,7 @@ bot_info = pd.Series(login_info['nFaxbot'])
 fax = pd.DataFrame(fax_info)
 class nfax:
     #로그인
-    def getHome():
+    def getHome(self):
         driver.get("https://mail.worksmobile.com/")
         t.sleep(1)
         #로그인 정보입력(아이디)
@@ -39,7 +39,7 @@ class nfax:
         ActionChains(driver).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
         t.sleep(1)
     #엔팩스 메일 확인
-    def newMail():
+    def newMail(self):
         try:
             driver.get("https://mail.worksmobile.com/#/my/103")
             t.sleep(2)
@@ -61,7 +61,7 @@ class nfax:
             t.sleep(5)
             NFAX.getHome()
     #종료
-    def logout():
+    def logout(self):
         try:
             logout_profile = driver.find_element(By.XPATH,'//div[@class="profile_area"]')
             logout_btn = driver.find_element(By.XPATH,'//a[@class="btn logout"]')
@@ -71,7 +71,7 @@ class nfax:
             driver.quit()
             t.sleep(5)
             NFAX.getHome()
-    def login():
+    def login(self):
         try:
             password_box = driver.find_element(By.XPATH,'//input[@id="user_pwd"]')
             login_button_2 = driver.find_element(By.XPATH,'//button[@id="loginBtn"]')
