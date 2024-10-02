@@ -2,8 +2,6 @@ import time as t
 import requests
 import json
 import pandas as pd
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r', encoding='utf-8') as f:
     login_info = json.load(f)
@@ -13,17 +11,18 @@ works_login = pd.Series(login_info['nFax'])
 bot_info = pd.Series(login_info['nFaxbot'])
 fax = pd.DataFrame(fax_info)
 class nfax:
-    def __init__(self):
+    #로그인
+    def getHome(self):
         from selenium import webdriver
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument('--disable-gpu')
         options.add_argument("--disable-javascript")
         options.add_argument('--disable-extensions')
         options.add_argument('--blink-settings=imagesEnabled=false')
         self.driver = webdriver.Chrome(options=options)
-    #로그인
-    def getHome(self):
+        from selenium.webdriver.common.action_chains import ActionChains
+        from selenium.webdriver.common.by import By
         self.driver.get("https://www.enfax.com/fax/view/receive")
         t.sleep(1)
         #로그인 정보입력(아이디)
@@ -58,10 +57,10 @@ class nfax:
                     #텔레그램 전송
                     requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
                     t.sleep(2)
+        else:pass
     #종료
-    def logout(self):
-        logout_btn = self.driver.find_element(By.XPATH,'//a[@class="link_logout"]')
-        ActionChains(self.driver).click(logout_btn).perform()
+    def quit(self):
+        self.driver.quit()
         t.sleep(1)
 NFAX = nfax()
 if __name__ == "__main__":
@@ -70,5 +69,5 @@ if __name__ == "__main__":
         for i in range(10):
             NFAX.newFax()
             t.sleep(5)
-        NFAX.logout()
+        NFAX.quit()
         t.sleep(0.5)
