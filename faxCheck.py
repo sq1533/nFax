@@ -67,7 +67,7 @@ NFAX = nfax()
 if __name__ == "__main__":
     while True:
         NFAX.getHome()
-        for i in range(100):
+        for i in range(10):
             NFAX.newFax()
             t.sleep(5)
         NFAX.logout()
