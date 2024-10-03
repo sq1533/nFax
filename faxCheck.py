@@ -51,7 +51,7 @@ def newFax(page):
     else:pass
 def main():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    #options.add_argument("--headless")
     options.add_argument('--disable-gpu')
     options.add_argument("--disable-javascript")
     options.add_argument('--disable-extensions')
