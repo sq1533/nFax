@@ -51,7 +51,7 @@ def newFax(page):
     else:pass
 def main():
     options = webdriver.ChromeOptions()
-    #options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument('--disable-gpu')
     options.add_argument("--disable-javascript")
     options.add_argument('--disable-extensions')
@@ -60,15 +60,17 @@ def main():
     driver.get("https://www.enfax.com/fax/view/receive")
     try:
         getHome(driver)
-        for i in range(50):
+        for i in range(2):
             newFax(driver)
             t.sleep(5)
         driver.quit()
         t.sleep(0.5)
-        main()
-    except:
+    except Exception:
         driver.quit()
         t.sleep(5)
-        main()
+    finally:
+        driver.quit()
 if __name__ == "__main__":
-    while True:main()
+    while True:
+        main()
+        t.sleep(0.5)
