@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 import time as t
 import requests
 import json
@@ -67,7 +66,7 @@ def main():
         driver.quit()
         t.sleep(0.5)
         main()
-    except TimeoutException:
+    except:
         driver.quit()
         t.sleep(5)
         main()
