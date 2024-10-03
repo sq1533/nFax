@@ -60,7 +60,7 @@ def main():
     driver.get("https://www.enfax.com/fax/view/receive")
     try:
         getHome(driver)
-        for i in range(2):
+        for i in range(10):
             newFax(driver)
             t.sleep(5)
         driver.quit()
