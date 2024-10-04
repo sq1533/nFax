@@ -1,3 +1,5 @@
+import os
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -50,15 +52,15 @@ def newFax(page):
                 t.sleep(2)
     else:pass
 def main():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument('--disable-gpu')
-    options.add_argument("--disable-javascript")
-    options.add_argument('--disable-extensions')
-    options.add_argument('--blink-settings=imagesEnabled=false')
-    driver = webdriver.Chrome(options=options)
-    driver.get("https://www.enfax.com/fax/view/receive")
     try:
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument('--disable-gpu')
+        options.add_argument("--disable-javascript")
+        options.add_argument('--disable-extensions')
+        options.add_argument('--blink-settings=imagesEnabled=false')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://www.enfax.com/fax/view/receive")
         getHome(driver)
         for i in range(10):
             newFax(driver)
@@ -66,10 +68,8 @@ def main():
         driver.quit()
         t.sleep(0.5)
     except Exception:
-        driver.quit()
         t.sleep(5)
-    finally:
-        driver.quit()
+        os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":
     while True:
         main()
