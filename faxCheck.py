@@ -68,7 +68,10 @@ def main():
         driver.quit()
         t.sleep(0.5)
     except Exception:
-        t.sleep(5)
+        t.sleep(2)
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    finally:
+        t.sleep(2)
         os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":
     while True:
