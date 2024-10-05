@@ -62,20 +62,24 @@ def main():
         driver = webdriver.Chrome(options=options)
         driver.get("https://www.enfax.com/fax/view/receive")
         getHome(driver)
-        max_runtime = 1800
+        browser_runtime = 600
+        max_runtime = 3600
         start_time = t.time()
         while True:
             newFax(driver)
             t.sleep(10)
             if t.time()-start_time > max_runtime:
+                print("스크립트 재시작")
+                t.sleep(2)
+                os.execl(sys.executable, sys.executable, *sys.argv)
+            elif t.time()-start_time > browser_runtime:
+                print("브라우저 재시작")
+                t.sleep(2)
                 driver.quit()
                 return
+            else:pass
     except Exception as e:
         print(f"오류 발생: {e}")
-        t.sleep(2)
-        os.execl(sys.executable, sys.executable, *sys.argv)
-    finally:
-        print("스크립트 재시작")
         t.sleep(2)
         os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":
