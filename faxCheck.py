@@ -51,6 +51,7 @@ def newFax(page):
                 requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
                 t.sleep(2)
     else:pass
+start_time = t.time()
 def main():
     try:
         options = webdriver.ChromeOptions()
@@ -64,7 +65,6 @@ def main():
         getHome(driver)
         browser_runtime = 600
         max_runtime = 3600
-        start_time = t.time()
         while True:
             newFax(driver)
             t.sleep(10)
