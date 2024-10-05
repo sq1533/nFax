@@ -52,7 +52,7 @@ def newFax(page):
                 t.sleep(2)
     else:pass
 def main():
-    start_time = t.time()
+    reset_time = t.time()
     while True:
         try:
             options = webdriver.ChromeOptions()
@@ -66,13 +66,14 @@ def main():
             getHome(driver)
             browser_runtime = 600
             max_runtime = 3600
+            start_time = t.time()
             while t.time()-start_time < browser_runtime:
                 newFax(driver)
                 t.sleep(10)
             print("브라우저 재시작")
             t.sleep(2)
             driver.quit()                
-            if t.time()-start_time >= max_runtime:
+            if t.time()-reset_time >= max_runtime:
                 print("스크립트 재시작")
                 t.sleep(2)
                 os.execl(sys.executable, sys.executable, *sys.argv)
