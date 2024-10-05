@@ -51,38 +51,34 @@ def newFax(page):
                 requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
                 t.sleep(2)
     else:pass
-start_time = t.time()
 def main():
-    try:
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument('--disable-gpu')
-        options.add_argument("--disable-javascript")
-        options.add_argument('--disable-extensions')
-        options.add_argument('--blink-settings=imagesEnabled=false')
-        driver = webdriver.Chrome(options=options)
-        driver.get("https://www.enfax.com/fax/view/receive")
-        getHome(driver)
-        browser_runtime = 600
-        max_runtime = 3600
-        while True:
-            newFax(driver)
-            t.sleep(10)
-            if t.time()-start_time > max_runtime:
+    start_time = t.time()
+    while True:
+        try:
+            options = webdriver.ChromeOptions()
+            options.add_argument("--headless")
+            options.add_argument('--disable-gpu')
+            options.add_argument("--disable-javascript")
+            options.add_argument('--disable-extensions')
+            options.add_argument('--blink-settings=imagesEnabled=false')
+            driver = webdriver.Chrome(options=options)
+            driver.get("https://www.enfax.com/fax/view/receive")
+            getHome(driver)
+            browser_runtime = 600
+            max_runtime = 3600
+            while t.time()-start_time < browser_runtime:
+                newFax(driver)
+                t.sleep(10)
+            print("브라우저 재시작")
+            t.sleep(2)
+            driver.quit()                
+            if t.time()-start_time >= max_runtime:
                 print("스크립트 재시작")
                 t.sleep(2)
                 os.execl(sys.executable, sys.executable, *sys.argv)
-            elif t.time()-start_time > browser_runtime:
-                print("브라우저 재시작")
-                t.sleep(2)
-                driver.quit()
-                return
             else:pass
-    except Exception as e:
-        print(f"오류 발생: {e}")
-        t.sleep(2)
-        os.execl(sys.executable, sys.executable, *sys.argv)
-if __name__ == "__main__":
-    while True:
-        main()
-        t.sleep(0.5)
+        except Exception as e:
+            print(f"오류 발생: {e}")
+            t.sleep(2)
+            os.execl(sys.executable, sys.executable, *sys.argv)
+if __name__ == "__main__":main()
