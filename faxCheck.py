@@ -67,8 +67,7 @@ def main():
         while True:
             newFax(driver)
             t.sleep(5)
-            if t.time() - start_time > max_runtime:
-                print("재시작 중... 드라이버 종료 및 재실행")
+            if t.time()-start_time > max_runtime:
                 driver.quit()
                 return
     except Exception as e:
@@ -76,7 +75,9 @@ def main():
         t.sleep(2)
         os.execl(sys.executable, sys.executable, *sys.argv)
     finally:
-        driver.quit()
+        print("스크립트 재시작")
+        t.sleep(2)
+        os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":
     while True:
         main()
