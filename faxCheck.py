@@ -68,6 +68,7 @@ def main():
             max_runtime = 3600
             start_time = t.time()
             while t.time()-start_time < browser_runtime:
+                print(int(t.time()-start_time))
                 newFax(driver)
                 t.sleep(10)
             print("브라우저 재시작")
