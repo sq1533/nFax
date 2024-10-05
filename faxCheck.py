@@ -66,7 +66,7 @@ def main():
         start_time = t.time()
         while True:
             newFax(driver)
-            t.sleep(5)
+            t.sleep(10)
             if t.time()-start_time > max_runtime:
                 driver.quit()
                 return
