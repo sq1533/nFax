@@ -28,11 +28,10 @@ def getHome(page):
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(loginbtn).perform()
     t.sleep(1)
     page.get("https://www.enfax.com/fax/view/receive")
-    t.sleep(1)
 #엔팩스 메일 확인
 def newFax(page):
     page.refresh()
-    t.sleep(1)
+    t.sleep(2)
     faxSoup = BeautifulSoup(page.page_source,'html.parser')
     newfax = faxSoup.find('span', attrs={'class':'state_box stt_notread'})
     #요소 검증
@@ -65,7 +64,7 @@ def main():
             driver.get("https://www.enfax.com/fax/view/receive")
             getHome(driver)
             browser_runtime = 600
-            max_runtime = 3600
+            max_runtime = 1800
             start_time = t.time()
             while t.time()-start_time < browser_runtime:
                 print(int(t.time()-start_time))
