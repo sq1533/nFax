@@ -58,7 +58,6 @@ def main():
             options = webdriver.ChromeOptions()
             options.add_argument("--headless")
             options.add_argument('--disable-gpu')
-            options.add_argument("--disable-javascript")
             options.add_argument('--disable-extensions')
             options.add_argument('--blink-settings=imagesEnabled=false')
             driver = webdriver.Chrome(options=options)
