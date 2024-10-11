@@ -14,6 +14,7 @@ with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f
     fax_info = json.load(f)
 works_login = pd.Series(login_info['nFax'])
 bot_info = pd.Series(login_info['nFaxbot'])
+check_bot = pd.Series(login_info['emailbot'])
 fax = pd.DataFrame(fax_info)
 def getHome(page):
     #로그인 정보입력(아이디)
@@ -70,16 +71,16 @@ def main():
                 print(int(t.time()-start_time))
                 newFax(driver)
                 t.sleep(10)
-            print("브라우저 재시작")
+            requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=브라우저_재시작")
             t.sleep(2)
             driver.quit()                
             if t.time()-reset_time >= max_runtime:
-                print("스크립트 재시작")
+                requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=스크립트_재시작")
                 t.sleep(2)
                 os.execl(sys.executable, sys.executable, *sys.argv)
             else:pass
         except Exception as e:
-            print(f"오류 발생: {e}")
+            requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=오류발생:{e}")
             t.sleep(2)
             os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":main()
