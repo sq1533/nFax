@@ -1,6 +1,7 @@
 import os
 import sys
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 import time as t
@@ -55,11 +56,11 @@ def main():
     reset_time = t.time()
     while True:
         try:
-            options = webdriver.ChromeOptions()
+            options = Options()
             options.add_argument('--disable-gpu')
             options.add_argument('--disable-extensions')
-            options.add_argument('--blink-settings=imagesEnabled=false')
-            driver = webdriver.Chrome(options=options)
+            options.set_preference('permissions.default.image',2)
+            driver = webdriver.Firefox(options=options)
             driver.get("https://www.enfax.com/fax/view/receive")
             getHome(driver)
             browser_runtime = 600
