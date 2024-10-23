@@ -72,7 +72,7 @@ def main():
                 t.sleep(10)
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=브라우저_재시작")
             t.sleep(2)
-            driver.quit()                
+            driver.quit()
             if t.time()-reset_time >= max_runtime:
                 requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=스크립트_재시작")
                 t.sleep(2)
@@ -80,6 +80,7 @@ def main():
             else:pass
         except Exception as e:
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={check_bot['chatId']}&text=오류발생:{e}")
+            driver.quit()
             t.sleep(2)
             os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":main()
