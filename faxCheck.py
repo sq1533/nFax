@@ -49,7 +49,9 @@ def newFax(page):
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
-        t.sleep(2)
+        t.sleep(1)
+        page.get("https://mail.worksmobile.com/#/my/103")
+        t.sleep(1)
     else:pass
 def main():
     reset_time = t.time()
