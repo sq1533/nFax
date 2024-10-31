@@ -32,13 +32,11 @@ def getHome(page):
     password = works_login['pw']
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
     t.sleep(1)
-    page.refresh
-    t.sleep(1)
     page.get("https://mail.worksmobile.com/#/my/103")
-    t.sleep(10)
+    t.sleep(1)
 #엔팩스 메일 확인
 def newFax(page):
-    page.refresh
+    page.refresh()
     t.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
     if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
@@ -53,7 +51,7 @@ def newFax(page):
         ActionChains(page).click(newMail).perform()
         t.sleep(1)
         page.get("https://mail.worksmobile.com/#/my/103")
-        t.sleep(10)
+        t.sleep(1)
     else:pass
 def main():
     reset_time = t.time()
@@ -72,6 +70,7 @@ def main():
             while t.time()-start_time < browser_runtime:
                 print(int(t.time()-start_time))
                 newFax(driver)
+                t.sleep(10)
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=브라우저_재시작")
             t.sleep(2)
             driver.quit()
