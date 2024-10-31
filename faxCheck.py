@@ -13,44 +13,43 @@ with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r', encoding='utf-8') a
     login_info = json.load(f)
 with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f:
     fax_info = json.load(f)
-works_login = pd.Series(login_info['nFax'])
+works_login = pd.Series(login_info['worksMail'])
 bot_info = pd.Series(login_info['nFaxbot'])
 bot_HC = pd.Series(login_info['nFaxbot_hc'])
 fax = pd.DataFrame(fax_info)
+#works로그인
 def getHome(page):
+    t.sleep(2)
     #로그인 정보입력(아이디)
-    id_box = page.find_element(By.XPATH,'//input[@id="userId"]')
+    id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
+    login_button_1 = page.find_element(By.XPATH,'//button[@id="loginStart"]')
     id = works_login['id']
-    ActionChains(page).send_keys_to_element(id_box, '{}'.format(id)).perform()
+    ActionChains(page).send_keys_to_element(id_box, '{}'.format(id)).click(login_button_1).perform()
     t.sleep(1)
     #로그인 정보입력(비밀번호)
-    password_box = page.find_element(By.XPATH,'//input[@id="userPwd"]')
-    loginbtn = page.find_element(By.XPATH, '//button[@id="btnLogin"]')
+    password_box = page.find_element(By.XPATH,'//input[@id="user_pwd"]')
+    login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
-    ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(loginbtn).perform()
+    ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
     t.sleep(1)
-    page.get("https://www.enfax.com/fax/view/receive")
+    page.get("https://mail.worksmobile.com/#/my/103")
+    t.sleep(1)
 #엔팩스 메일 확인
 def newFax(page):
-    page.refresh()
+    page.refresh
     t.sleep(2)
-    faxSoup = BeautifulSoup(page.page_source,'html.parser')
-    newfax = faxSoup.find('span', attrs={'class':'state_box stt_notread'})
-    #요소 검증
-    if newfax != None:
-        #수신확인
-        if newfax.get_text()=="안읽음":
-            faxNumber = faxSoup.find('div', attrs={'class':'t_row stt_notread faxReceiveBoxListRow'}).get('data-send-fax-number')
-            if faxNumber in fax['faxNumber'].tolist():
-                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사'].values}"
-                #텔레그램 전송
-                requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
-                t.sleep(2)
-            else:
-                tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : 확인불가"
-                #텔레그램 전송
-                requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
-                t.sleep(2)
+    mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
+    if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
+        faxNumber = mailHome_soup.find('strong', attrs={'class':'mail_title'}).getText().replace(' ','').split("hecto_2f에")[1].split("로부터")[0]
+        if faxNumber in fax['faxNumber'].tolist():
+            tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'] == faxNumber]['원천사'].values}"
+            requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
+        else:
+            tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : 확인불가"
+            requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
+        newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
+        ActionChains(page).click(newMail).perform()
+        t.sleep(2)
     else:pass
 def main():
     reset_time = t.time()
@@ -61,7 +60,7 @@ def main():
             options.add_argument('--disable-extensions')
             options.set_preference('permissions.default.image',2)
             driver = webdriver.Firefox(options=options)
-            driver.get("https://www.enfax.com/fax/view/receive")
+            driver.get("https://mail.worksmobile.com/")
             getHome(driver)
             browser_runtime = 600
             max_runtime = 1800
