@@ -31,14 +31,10 @@ def getHome(page):
     login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
-    t.sleep(1)
-    page.refresh()
-    t.sleep(1)
-    page.get("https://mail.worksmobile.com/#/my/103")
-    t.sleep(10)
 #엔팩스 메일 확인
 def newFax(page):
-    page.refresh()
+    t.sleep(2)
+    page.get("https://mail.worksmobile.com/#/my/103")
     t.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
     if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
@@ -52,8 +48,6 @@ def newFax(page):
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
         t.sleep(1)
-        page.get("https://mail.worksmobile.com/#/my/103")
-        t.sleep(10)
     else:pass
 def main():
     reset_time = t.time()
@@ -62,7 +56,6 @@ def main():
             options = Options()
             options.add_argument('--disable-gpu')
             options.add_argument('--disable-extensions')
-            options.set_preference('permissions.default.image',2)
             driver = webdriver.Firefox(options=options)
             driver.get("https://mail.worksmobile.com/")
             getHome(driver)
@@ -72,12 +65,14 @@ def main():
             while t.time()-start_time < browser_runtime:
                 print(int(t.time()-start_time))
                 newFax(driver)
+                t.sleep(10)
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=브라우저_재시작")
             t.sleep(2)
             driver.quit()
             if t.time()-reset_time >= max_runtime:
                 requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
                 t.sleep(2)
+                driver.quit()
                 os.execl(sys.executable, sys.executable, *sys.argv)
             else:pass
         except Exception as e:
