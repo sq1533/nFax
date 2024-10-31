@@ -31,10 +31,11 @@ def getHome(page):
     login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
-#엔팩스 메일 확인
-def newFax(page):
     t.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
+#엔팩스 메일 확인
+def newFax(page):
+    page.refresh()
     t.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
     if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
@@ -48,6 +49,7 @@ def newFax(page):
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
         t.sleep(1)
+        page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
 def main():
     reset_time = t.time()
