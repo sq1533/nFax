@@ -31,7 +31,9 @@ def getHome(page):
     login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
-    t.sleep(2)
+    t.sleep(1)
+    page.refresh
+    t.sleep(1)
     page.get("https://mail.worksmobile.com/#/my/103")
     t.sleep(10)
 #엔팩스 메일 확인
