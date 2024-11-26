@@ -20,13 +20,11 @@ fax = pd.DataFrame(fax_info)
 #works로그인
 def getHome(page) -> None:
     t.sleep(2)
-    #로그인 정보입력(아이디)
     id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
     login_button_1 = page.find_element(By.XPATH,'//button[@id="loginStart"]')
     id = works_login['id']
     ActionChains(page).send_keys_to_element(id_box, '{}'.format(id)).click(login_button_1).perform()
     t.sleep(1)
-    #로그인 정보입력(비밀번호)
     password_box = page.find_element(By.XPATH,'//input[@id="user_pwd"]')
     login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
