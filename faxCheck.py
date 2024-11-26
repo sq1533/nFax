@@ -18,7 +18,7 @@ bot_info = pd.Series(login_info['nFaxbot'])
 bot_HC = pd.Series(login_info['nFaxbot_hc'])
 fax = pd.DataFrame(fax_info)
 #works로그인
-def getHome(page):
+def getHome(page) -> None:
     t.sleep(2)
     #로그인 정보입력(아이디)
     id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
@@ -34,7 +34,7 @@ def getHome(page):
     t.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
 #엔팩스 메일 확인
-def newFax(page):
+def newFax(page) -> None:
     page.refresh()
     t.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
@@ -52,7 +52,7 @@ def newFax(page):
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
         page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
-def main():
+def main() -> None:
     reset_time = t.time()
     while True:
         try:
