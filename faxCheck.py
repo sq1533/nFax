@@ -40,15 +40,16 @@ def newFax(page) -> None:
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
         t.sleep(1)
-        download = page.find_element(By.XPATH,'//button[@class="btn_down_pc"]')
-        ActionChains(page).click(download).perform()
-        t.sleep(0.5)
         mail_soup = BeautifulSoup(page.page_source,'html.parser')
+        if page.find_element(By.XPATH,'//button[@class="btn_down_pc"]') != None:
+            ActionChains(page).click(page.find_element(By.XPATH,'//button[@class="btn_down_pc"]')).perform()
+            t.sleep(0.5)
+            fileName = mail_soup.find('a',attrs={'class':'file_name_txt'}).getText()
+            url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
+            with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
+                requests.post(url, data={"chat_id":bot_info['chatId']}, files={"document":file})
+        else:pass
         faxNumber = mail_soup.find('span',attrs={'class':'subject'}).getText().replace(' ','').split("hecto_2f에")[1].split("로부터")[0]
-        fileName = mail_soup.find('a',attrs={'class':'file_name_txt'}).getText()
-        url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
-        with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
-            requests.post(url, data={"chat_id":bot_info['chatId']}, files={"document":file})
         if faxNumber in fax['faxNumber'].tolist():
             tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'].isin([faxNumber])]['원천사'].reset_index(drop=True)[0]}"
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
