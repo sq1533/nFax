@@ -11,7 +11,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 with open('C:\\Users\\USER\\ve_1\\DB\\3loginInfo.json', 'r', encoding='utf-8') as f:
     login_info = json.load(f)
-with open('C:\\Users\\USER\\ve_1\\DB\\6faxInfo.json', 'r',encoding='utf-8') as f:
+with open('C:\\Users\\USER\\ve_1\\DB\\faxInfo.json', 'r',encoding='utf-8') as f:
     fax_info = json.load(f)
 works_login = pd.Series(login_info['worksMail'])
 bot_info = pd.Series(login_info['nFaxbot'])
