@@ -86,8 +86,8 @@ def main() -> None:
                 driver.quit()
                 os.execl(sys.executable, sys.executable, *sys.argv)
             else:pass
-        except Exception as e:
-            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=오류발생:{e}")
+        except Exception:
+            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=★★★오류발생_재시작")
             driver.quit()
             time.sleep(2)
             os.execl(sys.executable, sys.executable, *sys.argv)
