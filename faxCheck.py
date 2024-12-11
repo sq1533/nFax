@@ -1,13 +1,13 @@
 import os
 import sys
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
-import time as t
-import requests
 import json
 import pandas as pd
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 loginPath = os.path.join(os.path.dirname(__file__),"DB","1loginInfo.json")
 faxInfoPath = os.path.join(os.path.dirname(__file__),"DB","faxInfo.json")
@@ -21,31 +21,31 @@ bot_HC = pd.Series(login_info['nFaxbot_hc'])
 fax = pd.DataFrame(fax_info)
 #works로그인
 def getHome(page) -> None:
-    t.sleep(2)
+    time.sleep(2)
     id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
     login_button_1 = page.find_element(By.XPATH,'//button[@id="loginStart"]')
     id = works_login['id']
     ActionChains(page).send_keys_to_element(id_box, '{}'.format(id)).click(login_button_1).perform()
-    t.sleep(1)
+    time.sleep(1)
     password_box = page.find_element(By.XPATH,'//input[@id="user_pwd"]')
     login_button_2 = page.find_element(By.XPATH,'//button[@id="loginBtn"]')
     password = works_login['pw']
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
-    t.sleep(2)
+    time.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
 #엔팩스 메일 확인
 def newFax(page) -> None:
     page.refresh()
-    t.sleep(2)
+    time.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
     if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
-        t.sleep(1)
+        time.sleep(1)
         mail_soup = BeautifulSoup(page.page_source,'html.parser')
         if page.find_element(By.XPATH,'//button[@class="btn_down_pc"]') != None:
             ActionChains(page).click(page.find_element(By.XPATH,'//button[@class="btn_down_pc"]')).perform()
-            t.sleep(0.5)
+            time.sleep(0.5)
             fileName = mail_soup.find('a',attrs={'class':'file_name_txt'}).getText()
             url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
             with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
@@ -61,7 +61,7 @@ def newFax(page) -> None:
         page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
 def main() -> None:
-    reset_time = t.time()
+    reset_time = time.time()
     while True:
         try:
             options = Options()
@@ -72,23 +72,23 @@ def main() -> None:
             getHome(driver)
             browser_runtime = 600
             max_runtime = 1800
-            start_time = t.time()
-            while t.time()-start_time < browser_runtime:
-                print(int(t.time()-start_time))
+            start_time = time.time()
+            while time.time()-start_time < browser_runtime:
+                print(int(time.time()-start_time))
                 newFax(driver)
-                t.sleep(10)
+                time.sleep(10)
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=브라우저_재시작")
-            t.sleep(2)
+            time.sleep(2)
             driver.quit()
-            if t.time()-reset_time >= max_runtime:
+            if time.time()-reset_time >= max_runtime:
                 requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-                t.sleep(2)
+                time.sleep(2)
                 driver.quit()
                 os.execl(sys.executable, sys.executable, *sys.argv)
             else:pass
         except Exception as e:
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=오류발생:{e}")
             driver.quit()
-            t.sleep(2)
+            time.sleep(2)
             os.execl(sys.executable, sys.executable, *sys.argv)
 if __name__ == "__main__":main()
