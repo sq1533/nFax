@@ -50,6 +50,7 @@ def newFax(page) -> None:
             url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
             with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
                 requests.post(url, data={"chat_id":bot_info['chatId']}, files={"document":file})
+            os.remove(f"C:\\Users\\USER\\Downloads\\{fileName}")
         else:pass
         faxNumber = mail_soup.find('span',attrs={'class':'subject'}).getText().replace(' ','').split("hecto_2f에")[1].split("로부터")[0]
         if faxNumber in fax['faxNumber'].tolist():
