@@ -9,7 +9,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
-loginPath = os.path.join(os.path.dirname(__file__),"DB","1loginInfo.json")
+loginPath = os.path.join(os.path.dirname(__file__),"..","loginInfo.json")
 faxInfoPath = os.path.join(os.path.dirname(__file__),"DB","faxInfo.json")
 with open(loginPath, 'r', encoding='utf-8') as f:
     login_info = json.load(f)
