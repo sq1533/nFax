@@ -63,13 +63,13 @@ def newFax(page) -> None:
         page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
 def main() -> None:
-    options = Options()
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-extensions')
-    driver = webdriver.Firefox(options=options)
     reset_time = time.time()
     while True:
         try:
+            options = Options()
+            options.add_argument('--disable-gpu')
+            options.add_argument('--disable-extensions')
+            driver = webdriver.Firefox(options=options)
             getHome(driver)
             browser_runtime = 600
             max_runtime = 1800
