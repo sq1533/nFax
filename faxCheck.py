@@ -21,6 +21,7 @@ bot_HC = pd.Series(login_info['nFaxbot_hc'])
 fax = pd.DataFrame(fax_info)
 #works로그인
 def getHome(page) -> None:
+    page.get("https://mail.worksmobile.com/")
     time.sleep(2)
     id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
     login_button_1 = page.find_element(By.XPATH,'//button[@id="loginStart"]')
@@ -62,14 +63,13 @@ def newFax(page) -> None:
         page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
 def main() -> None:
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-extensions')
+    driver = webdriver.Firefox(options=options)
     reset_time = time.time()
     while True:
         try:
-            options = Options()
-            options.add_argument('--disable-gpu')
-            options.add_argument('--disable-extensions')
-            driver = webdriver.Firefox(options=options)
-            driver.get("https://mail.worksmobile.com/")
             getHome(driver)
             browser_runtime = 600
             max_runtime = 1800
@@ -86,7 +86,8 @@ def main() -> None:
                 time.sleep(2)
                 driver.quit()
                 os.execl(sys.executable, sys.executable, *sys.argv)
-            else:pass
+            else:
+                pass
         except Exception:
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=★★★오류발생_재시작")
             driver.quit()
