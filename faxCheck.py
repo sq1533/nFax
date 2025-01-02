@@ -67,7 +67,6 @@ def main() -> None:
     while True:
         try:
             options = Options()
-            options.add_argument('--headless')
             options.add_argument('--disable-gpu')
             options.add_argument('--disable-extensions')
             driver = webdriver.Firefox(options=options)
