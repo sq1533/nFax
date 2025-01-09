@@ -9,6 +9,8 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
+
+#정보 불러오기
 loginPath = os.path.join(os.path.dirname(__file__),"..","loginInfo.json")
 faxInfoPath = os.path.join(os.path.dirname(__file__),"DB","faxInfo.json")
 with open(loginPath, 'r', encoding='utf-8') as f:
@@ -19,6 +21,7 @@ works_login = pd.Series(login_info['worksMail'])
 bot_info = pd.Series(login_info['nFaxbot'])
 bot_HC = pd.Series(login_info['nFaxbot_hc'])
 fax = pd.DataFrame(fax_info)
+
 #works로그인
 def getHome(page) -> None:
     page.get("https://mail.worksmobile.com/")
@@ -34,6 +37,7 @@ def getHome(page) -> None:
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
     time.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
+
 #엔팩스 메일 확인
 def newFax(page) -> None:
     page.refresh()
@@ -62,6 +66,8 @@ def newFax(page) -> None:
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
         page.get("https://mail.worksmobile.com/#/my/103")
     else:pass
+
+#함수 구동
 def main() -> None:
     reset_time = time.time()
     while True:
@@ -89,9 +95,9 @@ def main() -> None:
                 os.execl(sys.executable, sys.executable, *sys.argv)
             else:
                 pass
-        except Exception:
-            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=★★★오류발생_재시작")
-            driver.quit()
-            time.sleep(2)
+        except Exception as e:
+            print(e)
+            time.sleep(1)
             os.execl(sys.executable, sys.executable, *sys.argv)
+
 if __name__ == "__main__":main()
