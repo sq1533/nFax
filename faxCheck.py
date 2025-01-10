@@ -56,7 +56,8 @@ def newFax(page) -> None:
             with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
                 requests.post(url, data={"chat_id":bot_info['chatId']}, files={"document":file})
             os.remove(f"C:\\Users\\USER\\Downloads\\{fileName}")
-        else:pass
+        else:
+            pass
         faxNumber = mail_soup.find('span',attrs={'class':'subject'}).getText().replace(' ','').split("hecto_2f에")[1].split("로부터")[0]
         if faxNumber in fax['faxNumber'].tolist():
             tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : {fax[fax['faxNumber'].isin([faxNumber])]['원천사'].reset_index(drop=True)[0]}"
@@ -65,39 +66,38 @@ def newFax(page) -> None:
             tell = f"신규 팩스 수신, 확인필요\n팩스번호 : {faxNumber}\n원천사 : 확인불가"
             requests.get(f"https://api.telegram.org/bot{bot_info['token']}/sendMessage?chat_id={bot_info['chatId']}&text={tell}")
         page.get("https://mail.worksmobile.com/#/my/103")
-    else:pass
+    else:
+        pass
 
 #함수 구동
 def main() -> None:
-    reset_time = time.time()
-    while True:
-        try:
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--disable-extensions')
-            driver = webdriver.Firefox(options=options)
+    try:
+        reset_time = time.time()
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-extensions')
+        driver = webdriver.Firefox(options=options)
+        while True:
             getHome(driver)
-            browser_runtime = 600
             max_runtime = 1800
             start_time = time.time()
-            while time.time()-start_time < browser_runtime:
+            while True:
                 print(int(time.time()-start_time))
                 newFax(driver)
                 time.sleep(10)
-            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=브라우저_재시작")
-            time.sleep(2)
-            driver.quit()
-            if time.time()-reset_time >= max_runtime:
-                requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-                time.sleep(2)
-                driver.quit()
-                os.execl(sys.executable, sys.executable, *sys.argv)
-            else:
-                pass
-        except Exception as e:
-            print(e)
-            time.sleep(1)
+                if (time.time()-reset_time) >= max_runtime:
+                    requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
+                    time.sleep(2)
+                    driver.quit()
+                    break
+                else:
+                    pass
             os.execl(sys.executable, sys.executable, *sys.argv)
+    except Exception as e:
+        print(e)
+        time.sleep(1)
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
-if __name__ == "__main__":main()
+if __name__ == "__main__":
+    main()
