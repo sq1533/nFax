@@ -96,6 +96,7 @@ def main() -> None:
             os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         print(e)
+        driver.quit()
         time.sleep(1)
         os.execl(sys.executable, sys.executable, *sys.argv)
 
