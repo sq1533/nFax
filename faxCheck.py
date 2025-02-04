@@ -37,25 +37,26 @@ def getHome(page) -> None:
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
     time.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
-
+#'C:\\Users\\USER\\Downloads\\fx_C023085724_D0260082368_B0_CH010_1738663363_0.tif'
 #엔팩스 메일 확인
 def newFax(page) -> None:
     page.refresh()
     time.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
-    if mailHome_soup.find('li', attrs={'class':'notRead'}) != None:
+    newMail = mailHome_soup.find('li', attrs={'class':'notRead'})
+    if newMail != None:
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
-        time.sleep(1)
+        time.sleep(2)
         mail_soup = BeautifulSoup(page.page_source,'html.parser')
-        if page.find_element(By.XPATH,'//button[@class="btn_down_pc"]') != None:
+        fileName = mail_soup.find('a',attrs={'class':'file_name_txt'})
+        if fileName != None:
             ActionChains(page).click(page.find_element(By.XPATH,'//button[@class="btn_down_pc"]')).perform()
-            time.sleep(0.5)
-            fileName = mail_soup.find('a',attrs={'class':'file_name_txt'}).getText()
+            time.sleep(1)
             url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
-            with open(f"C:\\Users\\USER\\Downloads\\{fileName}","rb") as file:
+            with open(f"C:\\Users\\USER\\Downloads\\{fileName.getText()}","rb") as file:
                 requests.post(url, data={"chat_id":bot_info['chatId']}, files={"document":file})
-            os.remove(f"C:\\Users\\USER\\Downloads\\{fileName}")
+            os.remove(f"C:\\Users\\USER\\Downloads\\{fileName.getText()}")
         else:
             pass
         faxNumber = mail_soup.find('span',attrs={'class':'subject'}).getText().replace(' ','').split("hecto_2f에")[1].split("로부터")[0]
@@ -69,28 +70,28 @@ def newFax(page) -> None:
     else:
         pass
 
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--disable-extensions')
+driver = webdriver.Firefox(options=options)
+getHome(driver)
+max_runtime = 1800
+start_time = time.time()
+
 #함수 구동
 def main() -> None:
     try:
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--disable-extensions')
-        driver = webdriver.Firefox(options=options)
-        getHome(driver)
-        max_runtime = 1800
-        start_time = time.time()
-        while True:
-            print(int(time.time()-start_time))
-            newFax(driver)
-            time.sleep(10)
-            if (time.time()-start_time) >= max_runtime:
-                requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-                time.sleep(2)
-                driver.quit()
-                break
-            else:
-                pass
+        runningTime = int(time.time()-start_time)  
+        print(runningTime)
+        newFax(driver)
+        time.sleep(5)
+        if (runningTime) >= max_runtime:
+            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
+            time.sleep(2)
+            driver.quit()
+        else:
+            pass
         os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         print(e)
@@ -99,4 +100,5 @@ def main() -> None:
         os.execl(sys.executable, sys.executable, *sys.argv)
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
