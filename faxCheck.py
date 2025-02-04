@@ -72,28 +72,26 @@ def newFax(page) -> None:
 #함수 구동
 def main() -> None:
     try:
-        reset_time = time.time()
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
         options.add_argument('--disable-extensions')
         driver = webdriver.Firefox(options=options)
+        getHome(driver)
+        max_runtime = 1800
+        start_time = time.time()
         while True:
-            getHome(driver)
-            max_runtime = 1800
-            start_time = time.time()
-            while True:
-                print(int(time.time()-start_time))
-                newFax(driver)
-                time.sleep(10)
-                if (time.time()-reset_time) >= max_runtime:
-                    requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-                    time.sleep(2)
-                    driver.quit()
-                    break
-                else:
-                    pass
-            os.execl(sys.executable, sys.executable, *sys.argv)
+            print(int(time.time()-start_time))
+            newFax(driver)
+            time.sleep(10)
+            if (time.time()-start_time) >= max_runtime:
+                requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
+                time.sleep(2)
+                driver.quit()
+                break
+            else:
+                pass
+        os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         print(e)
         driver.quit()
