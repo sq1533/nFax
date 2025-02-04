@@ -37,20 +37,21 @@ def getHome(page) -> None:
     ActionChains(page).send_keys_to_element(password_box, '{}'.format(password)).click(login_button_2).perform()
     time.sleep(2)
     page.get("https://mail.worksmobile.com/#/my/103")
-#'C:\\Users\\USER\\Downloads\\fx_C023085724_D0260082368_B0_CH010_1738663363_0.tif'
+
 #엔팩스 메일 확인
 def newFax(page) -> None:
     page.refresh()
     time.sleep(2)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
-    newMail = mailHome_soup.find('li', attrs={'class':'notRead'})
-    if newMail != None:
+    newMail = mailHome_soup.find_all('li', attrs={'class':'notRead'})
+    if newMail:
         newMail = page.find_element(By.XPATH,"//li[contains(@class,'notRead')]//div[@class='mTitle']//strong[@class='mail_title']")
         ActionChains(page).click(newMail).perform()
         time.sleep(2)
         mail_soup = BeautifulSoup(page.page_source,'html.parser')
-        fileName = mail_soup.find('a',attrs={'class':'file_name_txt'})
-        if fileName != None:
+        file = mail_soup.find_all('a',attrs={'class':'file_name_txt'})
+        if file:
+            fileName = mail_soup.find('a',attrs={'class':'file_name_txt'})
             ActionChains(page).click(page.find_element(By.XPATH,'//button[@class="btn_down_pc"]')).perform()
             time.sleep(1)
             url = f"https://api.telegram.org/bot{bot_info['token']}/sendDocument"
@@ -80,7 +81,7 @@ max_runtime = 1800
 start_time = time.time()
 
 #함수 구동
-def main() -> None:
+def main():
     try:
         runningTime = int(time.time()-start_time)  
         print(runningTime)
@@ -90,9 +91,9 @@ def main() -> None:
             requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
             time.sleep(2)
             driver.quit()
+            os.execl(sys.executable, sys.executable, *sys.argv)
         else:
             pass
-        os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         print(e)
         driver.quit()
