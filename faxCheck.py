@@ -5,7 +5,7 @@ import pandas as pd
 import time
 import requests
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+#from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
@@ -39,8 +39,8 @@ def getHome(page) -> None:
 
 #엔팩스 메일 확인
 def newFax(page) -> None:
-    page.refresh()
-    time.sleep(2)
+    ActionChains(page).click(page.find_element(By.XPATH,'//button[@class="btn_refresh refreshAtList"]')).perform()
+    time.sleep(1)
     mailHome_soup = BeautifulSoup(page.page_source,'html.parser')
     newMail = mailHome_soup.find_all('li', attrs={'class':'notRead'})
     if newMail:
@@ -70,11 +70,11 @@ def newFax(page) -> None:
     else:
         pass
 
-options = Options()
-options.add_argument('--headless')
+options = webdriver.ChromeOptions()
+options.add_argument("--headless")
 options.add_argument('--disable-gpu')
 options.add_argument('--disable-extensions')
-driver = webdriver.Firefox(options=options)
+driver = webdriver.Chrome(options=options)
 driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
 getHome(driver)
 max_runtime = 1800
