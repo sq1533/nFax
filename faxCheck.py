@@ -24,7 +24,6 @@ fax = pd.DataFrame(fax_info)
 
 #works로그인
 def getHome(page) -> None:
-    page.get("https://mail.worksmobile.com/")
     time.sleep(2)
     id_box = page.find_element(By.XPATH,'//input[@id="user_id"]')
     login_button_1 = page.find_element(By.XPATH,'//button[@id="loginStart"]')
@@ -76,6 +75,7 @@ options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 options.add_argument('--disable-extensions')
 driver = webdriver.Firefox(options=options)
+driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
 getHome(driver)
 max_runtime = 1800
 start_time = time.time()
