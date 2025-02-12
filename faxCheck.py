@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import time
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 from selenium import webdriver
 #from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
@@ -70,36 +71,23 @@ def newFax(page) -> None:
     else:
         pass
 
-options = webdriver.ChromeOptions()
-options.add_argument("--headless")
-options.add_argument('--disable-gpu')
-options.add_argument('--disable-extensions')
-driver = webdriver.Chrome(options=options)
-driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
-getHome(driver)
-max_runtime = 1800
-start_time = time.time()
-
-#함수 구동
-def main():
+if __name__ == "__main__":
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-extensions')
+    driver = webdriver.Chrome(options=options)
     try:
-        runningTime = int(time.time()-start_time)  
-        print(runningTime)
-        newFax(driver)
-        time.sleep(5)
-        if (runningTime) >= max_runtime:
-            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-            time.sleep(2)
-            driver.quit()
-            os.execl(sys.executable, sys.executable, *sys.argv)
-        else:
-            pass
+        driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
+        getHome(driver)
+
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(newFax,'interval',seconds=5,args=[driver])
+        scheduler.start()
+        while True:
+            time.sleep(0.1)
     except Exception as e:
         print(e)
         driver.quit()
-        time.sleep(1)
+        requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
         os.execl(sys.executable, sys.executable, *sys.argv)
-
-if __name__ == "__main__":
-    while True:
-        main()
