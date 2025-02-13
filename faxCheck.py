@@ -1,15 +1,20 @@
 import os
 import sys
+import subprocess
 import json
 import pandas as pd
 import time
 import requests
-from apscheduler.schedulers.background import BackgroundScheduler
 from selenium import webdriver
-#from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
+
+#재시작 프로토콜
+def restart_script():
+    driver.quit()
+    subprocess.Popen([sys.executable] + sys.argv)
+    sys.exit()
 
 #정보 불러오기
 loginPath = os.path.join(os.path.dirname(__file__),"..","loginInfo.json")
@@ -71,23 +76,39 @@ def newFax(page) -> None:
     else:
         pass
 
-if __name__ == "__main__":
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-extensions')
-    driver = webdriver.Chrome(options=options)
-    try:
-        driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
-        getHome(driver)
+#브라우저 설정
+options = webdriver.ChromeOptions()
+options.add_argument("--headless")
+options.add_argument('--disable-gpu')
+options.add_argument('--disable-extensions')
+driver = webdriver.Chrome(options=options)
+driver.get("https://auth.worksmobile.com/login/login?accessUrl=https%3A%2F%2Fmail.worksmobile.com")
+getHome(driver)
+max_runtime = 3600
+start_time = time.time()
 
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(newFax,'interval',seconds=5,args=[driver])
-        scheduler.start()
-        while True:
-            time.sleep(0.1)
-    except Exception as e:
-        print(e)
-        driver.quit()
+#구동
+def main():
+    try:
+        print(int(time.time()-start_time))
+        newFax(driver)
+        if (time.time()-start_time) >= max_runtime:
+            time.sleep(1)
+            requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
+            restart_script()
+        else:
+            pass
+    except Exception as ec:
+        print(ec)
+        time.sleep(1)
         requests.get(f"https://api.telegram.org/bot{bot_HC['token']}/sendMessage?chat_id={bot_HC['chatId']}&text=스크립트_재시작")
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        restart_script()
+
+if __name__ == "__main__":
+    while True:
+        try:
+            main()
+            time.sleep(3)
+        except Exception as e:
+            print(e)
+            time.sleep(10)
