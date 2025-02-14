@@ -17,7 +17,7 @@ def restart_script():
     sys.exit()
 
 #정보 불러오기
-loginPath = os.path.join(os.path.dirname(__file__),"..","loginInfo.json")
+loginPath = os.path.join(os.path.dirname(__file__),"DB","loginInfo.json")
 faxInfoPath = os.path.join(os.path.dirname(__file__),"DB","faxInfo.json")
 with open(loginPath, 'r', encoding='utf-8') as f:
     login_info = json.load(f)
